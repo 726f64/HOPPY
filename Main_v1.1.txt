@@ -1,0 +1,121 @@
+# HOPPY - a smart watering system using MetOffice API
+# for E14 Monthly Theme Competition
+# by rodders
+# 25th Feb 2018
+# v1.1
+
+import json
+import urllib.request
+import time
+from datetime import datetime
+
+myKey=""
+
+#The functions
+
+def checkWateringConstraints():
+   getMetOfficeData(testValue)
+   #work out the tests here...
+   if (testValue):
+       print("Passed conditions and so start watering")
+       startWatering()
+       wateredLast24hrs=1
+       return
+   else:
+       print("Didn't pass tests")
+       wateredLast24hrs=0
+       return
+
+def startWatering():
+        timeNow = datetime.now().strftime('%H:%M:%S')
+        print("Watering valve ON at:",timeNow)
+        time.sleep(wateringDuration)
+        timeNow = datetime.now().strftime('%H:%M:%S')
+        print("Watering valve OFF at:",timeNow)
+        return
+
+
+def getMetOfficeData(testValue):
+    print("Obtaining JSON data from MetOffice...")
+    jsonrequest = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/" + locationID + "?res=3hourly&key=" + myKey
+    url = urllib.request.urlopen(jsonrequest)
+    data = json.loads(url.read().decode(url.info().get_param('charset') or 'utf-8'))
+    print("Data obtained is:", data)
+
+    for key, value in data.items():
+        # today's data
+        Pp1=data['SiteRep']['DV']['Location']['Period'][0]['Rep'][RepNo]['Pp']
+        print("    Today Precipitation:", Pp1)
+        T1=data['SiteRep']['DV']['Location']['Period'][0]['Rep'][RepNo]['T']
+        print("    Today's Temperature:",T1)
+        W1=data['SiteRep']['DV']['Location']['Period'][0]['Rep'][RepNo]['W']
+        print("    Today's Weather:",W1)
+
+        # tomorrow's data
+        Pp2=data['SiteRep']['DV']['Location']['Period'][1]['Rep'][RepNo]['Pp']
+        print("    Tomorrow Precipitation:", Pp2)
+        T2=data['SiteRep']['DV']['Location']['Period'][1]['Rep'][RepNo]['T']
+        print("    Tomorrow's Temperature:",T2)
+        W2=data['SiteRep']['DV']['Location']['Period'][1]['Rep'][RepNo]['W']
+        print("    Tomorrow's Weather:",W2)
+
+        # two days ahead data
+        Pp3=data['SiteRep']['DV']['Location']['Period'][2]['Rep'][RepNo]['Pp']
+        print("    +2day Precipitation:", Pp3)
+        T3=data['SiteRep']['DV']['Location']['Period'][2]['Rep'][RepNo]['T']
+        print("    +2day Temperature:",T3)
+        W3=data['SiteRep']['DV']['Location']['Period'][2]['Rep'][RepNo]['W']
+        print("    +2 day Weather:",W3)
+
+        testValue=1
+        probWet=0
+        probWet = probWet + int(Pp1) + (int(Pp2)*0.7) + (int(Pp3)*0.5)
+        print("    Combined weighting for Prob Rain is:",probWet)           #NB: not true stats etc eg adding/weighting percentages
+
+        if ((probWet>40) and (wateredLast24hrs)):
+            print("    Could rain soon. Hold off")
+            testValue = 0
+        elif ((probWet>90) and (wateredLast24hrs!=1)):
+            print("    We held off last 24 hrs but more chance of rain, still hold off.")
+            testValue = 0
+        print("testValue is:",testValue)
+        return
+
+#The main loop
+
+# Setup data
+output_file = open('test.json', 'w')
+locationID="3772"
+RepNo=0
+
+wateringTime = "17:12"
+wateringDuration=20     #in seconds
+data = {}
+testValue=0
+wateredLast24hrs=0
+
+#You can sign up free for your own key from MetOffice.
+# Just add it as plain text to a file as named below.
+API_key_file = open("MyMetOfficeAPIKey.txt",'r')
+myKey=API_key_file.read()
+API_key_file.close()
+
+while(1):
+    #Get the current time
+    timeNow = datetime.now().strftime('%H:%M')
+    print("Current system time is: ",timeNow)
+
+    #If watering time then test constraints for watering
+    if (timeNow==wateringTime):
+        print("Watering period is now, checking constraints...")
+        checkWateringConstraints()
+
+    #If manual button the water
+
+
+
+    #Delay 45 seconds
+    time.sleep(10)
+
+    #end of main loop/while
+
