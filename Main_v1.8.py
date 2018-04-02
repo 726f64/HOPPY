@@ -158,9 +158,12 @@ def hsleep(sleepPeriod):
 ######################################################################################################
 # The main loop
 ######################################################################################################
-print("Welcome to HOPPY - your smart plant irrigation system")
-print("by Rodders for Element14, April 2018, v1.8")
-print("\n")
+print("***********************************************************")
+print("*                                                         *")
+print("* Welcome to HOPPY - your smart plant irrigation system   *")
+print("* by Rod for Element14, April 2018, v1.8                  *")
+print("*                                                         *")
+print("***********************************************************")
 
 #get the time from the arguments provided or use a default value set to 8pm when sun has probably gone down
 # see https://stackoverflow.com/questions/7427101/simple-argparse-example-wanted-1-argument-3-results#7427376
@@ -263,3 +266,4 @@ while 1:
 
 # Should we get to the end I guess we need something like this;
 GPIO.cleanup()
+
