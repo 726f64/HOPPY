@@ -5,4 +5,6 @@ The idea for this project is that the Pi can access the WWW and more specificall
 
 Such a system would likely not be too useful in places where water is plentiful or from mains supplies - however I think it will be really useful if the water is perhaps roof run off to a water barrel. This should prevent watering the plants and using the barrel's supply up when the next day is is probably going to rain anyway.
 
+Some smart watering systems use a moisture sensor to work out when the soil (and plant) needs watering but those could needlessly water the plants when rain is imminent. That said, a moisture sensor would make a great logical addition to this API based unit - should the prediction not come tru and the soil drys to a critical level.
+
 Code is provided without restrictions for using on your own projects, modifying or repurposing. However a link or acknowlegment would be appreciated.
