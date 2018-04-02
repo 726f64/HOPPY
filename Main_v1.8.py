@@ -57,6 +57,9 @@ def startWatering():
         print("Watering valve OFF at:", timeNow)
 
         lastWateredTime = datetime.now()
+        # and to stop cycling for small durations add a delay
+        if debugID > 0:
+            time.sleep(60)
         return
 
 	
@@ -266,4 +269,5 @@ while 1:
 
 # Should we get to the end I guess we need something like this;
 GPIO.cleanup()
+
 
